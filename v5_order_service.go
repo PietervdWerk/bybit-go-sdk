@@ -14,6 +14,7 @@ type V5OrderServiceI interface {
 	CancelOrder(V5CancelOrderParam) (*V5CancelOrderResponse, error)
 	GetOpenOrders(V5GetOpenOrdersParam) (*V5GetOpenOrdersResponse, error)
 	CancelAllOrders(V5CancelAllOrdersParam) (*V5CancelAllOrdersResponse, error)
+	GetOrderHistory(V5GetOrderHistoryParam) (*V5GetOrderHistoryResponse, error)
 }
 
 // V5OrderService :
@@ -336,6 +337,94 @@ func (s *V5OrderService) CancelAllOrders(param V5CancelAllOrdersParam) (*V5Cance
 
 	if err := s.client.postV5JSON("/v5/order/cancel-all", body, &res); err != nil {
 		return &res, err
+	}
+
+	return &res, nil
+}
+
+// V5GetOrderHistoryParam :
+type V5GetOrderHistoryParam struct {
+	Category CategoryV5 `json:"category"`
+
+	Symbol      *SymbolV5 `json:"symbol,omitempty"`
+	BaseCoin    *string   `json:"baseCoin,omitempty"`
+	OrderID     *string   `json:"orderId,omitempty"`
+	OrderLinkID *string   `json:"orderLinkId,omitempty"`
+	OrderFilter *string   `json:"orderFilter,omitempty"`
+	OrderStatus *string   `json:"orderStatus,omitempty"`
+	StartTime   *int64    `json:"startTime,omitempty"`
+	EndTime     *int64    `json:"endTime,omitempty"`
+	Limit       *int      `json:"limit,omitempty"`
+	Cursor      *string   `json:"cursor,omitempty"`
+}
+
+// V5GetOrderHistoryResponse :
+type V5GetOrderHistoryResponse struct {
+	CommonV5Response `json:",inline"`
+	Result           V5GetOrderHistoryResult `json:"result"`
+}
+
+// V5GetOrderHistoryResult :
+type V5GetOrderHistoryResult struct {
+	NextPageCursor string     `json:"nextPageCursor"`
+	Category       CategoryV5 `json:"category"`
+	List           []struct {
+		OrderId            string      `json:"orderId"`
+		OrderLinkId        string      `json:"orderLinkId"`
+		BlockTradeId       string      `json:"blockTradeId"`
+		Symbol             SymbolV5    `json:"symbol"`
+		Price              string      `json:"price"`
+		Qty                string      `json:"qty"`
+		Side               Side        `json:"side"`
+		IsLeverage         string      `json:"isLeverage"`
+		PositionIdx        int         `json:"positionIdx"`
+		OrderStatus        string      `json:"orderStatus"`
+		CancelType         string      `json:"cancelType"`
+		RejectReason       string      `json:"rejectReason"`
+		AvgPrice           string      `json:"avgPrice"`
+		LeavesQty          string      `json:"leavesQty"`
+		LeavesValue        string      `json:"leavesValue"`
+		CumExecQty         string      `json:"cumExecQty"`
+		CumExecValue       string      `json:"cumExecValue"`
+		CumExecFee         string      `json:"cumExecFee"`
+		TimeInForce        TimeInForce `json:"timeInForce"`
+		OrderType          string      `json:"orderType"`
+		StopOrderType      string      `json:"stopOrderType"`
+		OrderIv            string      `json:"orderIv"`
+		TriggerPrice       string      `json:"triggerPrice"`
+		TakeProfit         string      `json:"takeProfit"`
+		StopLoss           string      `json:"stopLoss"`
+		TpTriggerBy        string      `json:"tpTriggerBy"`
+		SlTriggerBy        string      `json:"slTriggerBy"`
+		TriggerDirection   int         `json:"triggerDirection"`
+		TriggerBy          TriggerBy   `json:"triggerBy"`
+		LastPriceOnCreated string      `json:"lastPriceOnCreated"`
+		ReduceOnly         bool        `json:"reduceOnly"`
+		CloseOnTrigger     bool        `json:"closeOnTrigger"`
+		PlaceType          string      `json:"placeType"`
+		SmpType            string      `json:"smpType"`
+		SmpGroup           int         `json:"smpGroup"`
+		SmpOrderId         string      `json:"smpOrderId"`
+		CreatedTime        string      `json:"createdTime"`
+		UpdatedTime        string      `json:"updatedTime"`
+	} `json:"list"`
+}
+
+// GetOrderHistory :
+func (s *V5OrderService) GetOrderHistory(param V5GetOrderHistoryParam) (*V5GetOrderHistoryResponse, error) {
+	var res V5GetOrderHistoryResponse
+
+	if param.Category == "" {
+		return nil, fmt.Errorf("category needed")
+	}
+
+	queryString, err := query.Values(param)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.client.getV5Privately("/v5/order/history", queryString, &res); err != nil {
+		return nil, err
 	}
 
 	return &res, nil
