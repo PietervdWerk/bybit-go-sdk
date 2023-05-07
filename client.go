@@ -147,10 +147,11 @@ func getV5Signature(
 	timestamp int64,
 	key string,
 	queryString string,
+	recordingWindow string,
 	secret string,
 ) string {
 	val := strconv.FormatInt(timestamp, 10) + key
-	val = val + queryString
+	val = val + queryString + recordingWindow
 	h := hmac.New(sha256.New, []byte(secret))
 	h.Write([]byte(val))
 	return hex.EncodeToString(h.Sum(nil))
@@ -271,7 +272,7 @@ func (c *Client) getV5Privately(path string, query url.Values, dst interface{}) 
 	u.RawQuery = query.Encode()
 
 	timestamp := c.getTimestamp()
-	sign := getV5Signature(timestamp, c.key, query.Encode(), c.secret)
+	sign := getV5Signature(timestamp, c.key, query.Encode(), "8000", c.secret)
 
 	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
 	if err != nil {
