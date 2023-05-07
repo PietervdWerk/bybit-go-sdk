@@ -344,18 +344,18 @@ func (s *V5OrderService) CancelAllOrders(param V5CancelAllOrdersParam) (*V5Cance
 
 // V5GetOrderHistoryParam :
 type V5GetOrderHistoryParam struct {
-	Category CategoryV5 `json:"category"`
+	Category CategoryV5 `url:"category"`
 
-	Symbol      *SymbolV5 `json:"symbol,omitempty"`
-	BaseCoin    *string   `json:"baseCoin,omitempty"`
-	OrderID     *string   `json:"orderId,omitempty"`
-	OrderLinkID *string   `json:"orderLinkId,omitempty"`
-	OrderFilter *string   `json:"orderFilter,omitempty"`
-	OrderStatus *string   `json:"orderStatus,omitempty"`
-	StartTime   *int64    `json:"startTime,omitempty"`
-	EndTime     *int64    `json:"endTime,omitempty"`
-	Limit       *int      `json:"limit,omitempty"`
-	Cursor      *string   `json:"cursor,omitempty"`
+	Symbol      *SymbolV5 `url:"symbol,omitempty"`
+	BaseCoin    *string   `url:"baseCoin,omitempty"`
+	OrderID     *string   `url:"orderId,omitempty"`
+	OrderLinkID *string   `url:"orderLinkId,omitempty"`
+	OrderFilter *string   `url:"orderFilter,omitempty"`
+	OrderStatus *string   `url:"orderStatus,omitempty"`
+	StartTime   *int64    `url:"startTime,omitempty"`
+	EndTime     *int64    `url:"endTime,omitempty"`
+	Limit       *int      `url:"limit,omitempty"`
+	Cursor      *string   `url:"cursor,omitempty"`
 }
 
 // V5GetOrderHistoryResponse :
