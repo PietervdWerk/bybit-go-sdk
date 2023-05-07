@@ -87,6 +87,7 @@ func (c *Client) Request(req *http.Request, dst interface{}) error {
 		if err != nil {
 			return err
 		}
+		fmt.Println(string(body))
 
 		if c.checkResponseBody == nil {
 			return errors.New("checkResponseBody func should be set")
