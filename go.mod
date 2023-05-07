@@ -1,4 +1,4 @@
-module github.com/hirokisan/bybit/v2
+module bybit-go-sdk
 
 go 1.18
 

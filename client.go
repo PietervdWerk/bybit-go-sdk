@@ -280,6 +280,7 @@ func (c *Client) getV5Privately(path string, query url.Values, dst interface{}) 
 	req.Header.Set("X-BAPI-API-KEY", c.key)
 	req.Header.Set("X-BAPI-TIMESTAMP", strconv.FormatInt(timestamp, 10))
 	req.Header.Set("X-BAPI-SIGN", sign)
+	req.Header.Set("X-BAPI-RECV-WINDOW", "8000")
 
 	if err := c.Request(req, &dst); err != nil {
 		return err
